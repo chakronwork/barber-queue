@@ -31,6 +31,12 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# เพิ่มส่วนนี้ — ไฟล์ที่ drizzle-kit ต้องใช้ตอน db:push
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+# ถ้า schema แยกไฟล์ เช่น src/db/schema.ts หรือ drizzle/ (migrations folder) ให้ copy มาด้วย เช่น
+COPY --from=builder --chown=nextjs:nodejs /app/src/db ./src/db
+
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
