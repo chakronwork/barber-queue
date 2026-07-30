@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: barber_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://barber:barber123@db:5432/barber_queue
+      - JWT_SECRET=dev_secret_change_me
+    depends_on:
+      db:
+        condition: service_healthy
+    # หมายเหตุ: สำหรับ production จริง ควรรัน db:push แยกก่อน start app
+    # หรือตั้งค่า pre-deploy command บน Railway/Render
+
+  db:
+    image: postgres:16-alpine
+    container_name: barber_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: barber
+      POSTGRES_PASSWORD: barber123
+      POSTGRES_DB: barber_queue
+    ports:
+      - "5432:5432"
+    volumes:
+      - barber_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U barber -d barber_queue"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  barber_pgdata:
