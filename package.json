@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:push": "npx drizzle-kit push",
+    "db:push": "npx drizzle-kit push --config=drizzle.config.ts",
     "db:seed": "tsx src/db/seed.ts",
     "test": "vitest run",
     "test:watch": "vitest"
