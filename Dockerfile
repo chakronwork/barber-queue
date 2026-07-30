@@ -25,9 +25,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# ติดตั้ง production dependencies (รวม drizzle-kit สำหรับ pre-deploy)
+# ใช้ npm install แทน npm ci เพื่อข้ามปัญหา lockfile sync
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
